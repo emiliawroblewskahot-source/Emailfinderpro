@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lead Magnet Pro v3.3 | Smart Mini-Windows</title>
+    <title>Lead Magnet Pro v3.2 | Dual Search Mode</title>
     <style>
         :root {
             --primary: #6366f1;
             --secondary: #a855f7;
             --success: #10b981;
+            --info: #3b82f6;
             --bg: #0f172a;
             --card-bg: rgba(30, 41, 59, 0.7);
             --text: #f1f5f9;
@@ -86,6 +87,7 @@
             margin-top: 15px;
         }
 
+        /* Search Buttons Grid */
         .search-actions {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -108,8 +110,16 @@
             font-size: 13px;
         }
 
-        .btn-combined { background: linear-gradient(to right, var(--primary), var(--secondary)); color: white; }
-        .btn-multi { background: rgba(99, 102, 241, 0.1); color: #a5b4fc; border: 1px solid rgba(99, 102, 241, 0.3); }
+        .btn-combined {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+        }
+
+        .btn-multi {
+            background: rgba(99, 102, 241, 0.1);
+            color: #a5b4fc;
+            border: 1px solid rgba(99, 102, 241, 0.3);
+        }
 
         .btn:hover { transform: translateY(-2px); filter: brightness(1.2); }
 
@@ -132,7 +142,7 @@
         }
 
         #output {
-            color: #34d399;
+            color: #10b981;
             font-family: 'Fira Code', monospace;
             font-size: 14px;
             max-height: 250px;
@@ -140,15 +150,18 @@
             white-space: pre-wrap;
         }
 
-        .badge { background: var(--primary); color: white; padding: 4px 10px; border-radius: 8px; font-size: 0.8rem; }
-        
-        .tip-box {
+        .badge {
+            background: var(--primary);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+        }
+
+        .tip {
             font-size: 0.8rem;
             color: #64748b;
-            margin-top: 15px;
-            padding: 10px;
-            background: rgba(0,0,0,0.2);
-            border-radius: 8px;
+            margin-top: 10px;
             text-align: center;
         }
     </style>
@@ -156,16 +169,16 @@
 <body>
 
 <div class="container">
-    <h1>Lead Magnet Pro v3.3</h1>
+    <h1>Lead Magnet Pro v3.2</h1>
 
     <div class="input-group">
         <label>Target Keywords (Separate with commas)</label>
-        <textarea id="keywords" rows="2" placeholder="e.g. fashion blogger, model, influencer"></textarea>
+        <textarea id="keywords" rows="2" placeholder="e.g. register LLC, US business, startup owner"></textarea>
         
         <div class="config-grid">
             <div>
                 <label>Country / City</label>
-                <input type="text" id="location" placeholder="e.g. USA">
+                <input type="text" id="location" placeholder="e.g. London">
             </div>
             <div>
                 <label>Platform</label>
@@ -173,6 +186,7 @@
                     <option value="site:instagram.com">Instagram</option>
                     <option value="site:linkedin.com/in/">LinkedIn</option>
                     <option value="site:tiktok.com">TikTok</option>
+                    <option value="site:facebook.com">Facebook</option>
                 </select>
             </div>
             <div>
@@ -180,27 +194,26 @@
                 <select id="email">
                     <option value="@gmail.com">@gmail.com</option>
                     <option value="@outlook.com">@outlook.com</option>
-                    <option value='member of "@"'>Any Domain</option>
+                    <option value="@yahoo.com">@yahoo.com</option>
+                    <option value='member of "@"'>Any @Domain</option>
                 </select>
             </div>
         </div>
 
         <div class="search-actions">
             <button class="btn btn-combined" onclick="searchMode('combined')">
-                ☝️ Combined Window
+                ☝️ Search in 1 Page
             </button>
             <button class="btn btn-multi" onclick="searchMode('multi')">
-                🗂️ Launch Mini-Windows
+                🗂️ Open in Many Tabs
             </button>
         </div>
-        <div class="tip-box">
-            <b>Mini-Window Tip:</b> Use <kbd>Ctrl+A</kbd> then <kbd>Ctrl+C</kbd> in the popup, then close it and paste here.
-        </div>
+        <p class="tip">Note: Multi-tab mode might be blocked by browser pop-up blockers.</p>
     </div>
 
     <div class="input-group">
-        <label>Step 2: Paste Data Below</label>
-        <textarea id="rawInput" rows="4" placeholder="Paste all results here..."></textarea>
+        <label>Paste Google Results (Ctrl+A -> Ctrl+C from Google)</label>
+        <textarea id="rawInput" rows="4" placeholder="Paste all copied text here..."></textarea>
         
         <div class="results-section">
             <button class="btn btn-extract" onclick="extractEmails()">🚀 Extract Emails</button>
@@ -218,6 +231,8 @@
 </div>
 
 <script>
+    
+
     function getInputs() {
         return {
             keywords: document.getElementById('keywords').value.split(',').map(k => k.trim()).filter(k => k !== ""),
@@ -229,56 +244,67 @@
 
     function searchMode(mode) {
         const data = getInputs();
-        if(data.keywords.length === 0) { alert("Enter keywords first!"); return; }
-
-        // Konfiguracja rozmiaru okna popup
-        const width = 900;
-        const height = 700;
-        const left = (screen.width - width) / 2;
-        const top = (screen.height - height) / 2;
+        if(data.keywords.length === 0) { alert("Please enter keywords!"); return; }
 
         if (mode === 'combined') {
+            // SINGLE PAGE MODE (OR operator)
             const combinedKeywords = data.keywords.map(k => `"${k}"`).join(' OR ');
             let query = `${data.platform} (${combinedKeywords}) `;
             if(data.location) query += `"${data.location}" `;
             query += `"${data.email}"`;
             
-            const url = `https://www.google.com/search?q=${encodeURIComponent(query)}&num=100`;
-            window.open(url, "LeadSearch", `width=${width},height=${height},left=${left},top=${top},scrollbars=yes,resizable=yes`);
+            window.open(`https://www.google.com/search?q=${encodeURIComponent(query)}&num=100`, '_blank');
         } 
         else if (mode === 'multi') {
-            if(data.keywords.length > 5 && !confirm(`Open ${data.keywords.length} mini-windows?`)) return;
+            // MULTI TAB MODE
+            if(data.keywords.length > 5) {
+                if(!confirm(`Open ${data.keywords.length} tabs at once?`)) return;
+            }
             
-            data.keywords.forEach((topic, index) => {
+            data.keywords.forEach(topic => {
                 let query = `${data.platform} "${topic}" `;
                 if(data.location) query += `"${data.location}" `;
                 query += `"${data.email}"`;
-                
-                const url = `https://www.google.com/search?q=${encodeURIComponent(query)}&num=100`;
-                
-                // Przesunięcie każdego okna o 30px, aby nie nakładały się idealnie
-                const offsetLeft = left + (index * 30);
-                const offsetTop = top + (index * 30);
-                
-                window.open(url, `LeadSearch_${index}`, `width=${width},height=${height},left=${offsetLeft},top=${offsetTop},scrollbars=yes,resizable=yes`);
+                window.open(`https://www.google.com/search?q=${encodeURIComponent(query)}&num=100`, '_blank');
             });
         }
     }
 
     function extractEmails() {
-        const text = document.getElementById('rawInput').value;
-        const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g;
-        const found = text.match(emailRegex);
+    // 1. Pobierz tekst z pola, w które wklejasz (nowe dane)
+    const newText = document.getElementById('rawInput').value;
+    const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g;
+    const foundInNewText = newText.match(emailRegex) || [];
+
+    // 2. Pobierz to, co już jest w oknie wyników (stare dane)
+    const resultsDiv = document.getElementById('output');
+    const currentResultsText = resultsDiv.innerText;
+
+    // Sprawdź, czy okno nie zawiera domyślnego napisu "Results will appear here..."
+    let existingEmails = [];
+    if (currentResultsText.includes("@")) {
+        existingEmails = currentResultsText.split('\n');
+    }
+
+    // 3. Połącz stare maile z nowymi
+    const combinedEmails = [...existingEmails, ...foundInNewText];
+
+    // 4. Usuń duplikaty (Set) i wyczyść ewentualne spacje
+    const uniqueEmails = [...new Set(combinedEmails.map(e => e.trim().toLowerCase()))];
+
+    // 5. Wyświetl zaktualizowaną listę
+    if (uniqueEmails.length > 0) {
+        resultsDiv.innerText = uniqueEmails.join('\n');
+        document.getElementById('count').innerText = uniqueEmails.length;
         
-        if (found) {
-            const uniqueEmails = [...new Set(found)];
-            document.getElementById('output').innerText = uniqueEmails.join('\n');
-            document.getElementById('count').innerText = uniqueEmails.length;
-        } else {
-            document.getElementById('output').innerText = "No emails found.";
-            document.getElementById('count').innerText = "0";
+        // Opcjonalnie: Wyczyść pole wklejania po ekstrakcji, by było gotowe na następny raz
+        document.getElementById('rawInput').value = "";
+    } else {
+        if (!currentResultsText.includes("@")) {
+            resultsDiv.innerText = "No emails found.";
         }
     }
+}
 
     function clearAll() {
         document.getElementById('rawInput').value = "";
@@ -293,5 +319,6 @@
     }
 </script>
 
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"rayId":"9bf665fbde69817c","serverTiming":{"name":{"cfExtPri":true,"cfEdge":true,"cfOrigin":true,"cfL4":true,"cfSpeedBrain":true,"cfCacheStatus":true}},"version":"2025.9.1","token":"5070e21320304a1ba2b0a42ce9682840"}' crossorigin="anonymous"></script>
 </body>
 </html>
