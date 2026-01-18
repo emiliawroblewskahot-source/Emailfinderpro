@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lead Magnet Pro v6.2 | Deep Cloud Scraper</title>
+    <title>Lead Magnet Pro v7.0 | Hybrid Scraper</title>
     <style>
         :root {
-            --primary: #6366f1; --secondary: #a855f7; --success: #10b981;
+            --primary: #6366f1; --secondary: #a855f7; --success: #10b981; --warning: #f59e0b; --danger: #ef4444;
             --bg: #0f172a; --card-bg: rgba(30, 41, 59, 0.7); --text: #f1f5f9;
         }
         body {
@@ -15,38 +15,54 @@
             color: var(--text); margin: 0; padding: 20px; display: flex; justify-content: center; min-height: 100vh;
         }
         .container {
-            max-width: 900px; width: 100%; background: var(--card-bg); backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 24px; padding: 40px; box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            max-width: 950px; width: 100%; background: var(--card-bg); backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 24px; padding: 30px; box-shadow: 0 20px 50px rgba(0,0,0,0.3);
         }
-        h1 { text-align: center; font-size: 2.2rem; background: linear-gradient(to right, #818cf8, #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 5px; }
-        .subtitle { text-align: center; color: #94a3b8; font-size: 0.85rem; margin-bottom: 30px; }
-        .input-group { background: rgba(255, 255, 255, 0.03); padding: 25px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.05); margin-bottom: 20px; }
+        h1 { text-align: center; font-size: 2rem; background: linear-gradient(to right, #818cf8, #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 5px; }
+        .subtitle { text-align: center; color: #94a3b8; font-size: 0.85rem; margin-bottom: 25px; }
+        
+        .input-group { background: rgba(255, 255, 255, 0.03); padding: 20px; border-radius: 20px; border: 1px solid rgba(255, 255, 255, 0.05); margin-bottom: 20px; }
         label { display: block; font-size: 0.7rem; text-transform: uppercase; color: #a5b4fc; margin-bottom: 8px; font-weight: 700; }
-        textarea, input, select { width: 100%; background: rgba(15, 23, 42, 0.6); border: 1px solid #334155; color: white; padding: 12px; border-radius: 10px; font-size: 14px; box-sizing: border-box; outline: none; margin-bottom: 15px; }
+        textarea, input, select { width: 100%; background: rgba(15, 23, 42, 0.6); border: 1px solid #334155; color: white; padding: 12px; border-radius: 10px; font-size: 14px; box-sizing: border-box; outline: none; margin-bottom: 10px; }
+        
         .config-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
-        .btn { border: none; padding: 16px; border-radius: 12px; font-weight: bold; cursor: pointer; transition: 0.3s; text-transform: uppercase; display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 14px; width: 100%; }
-        .btn-primary { background: linear-gradient(to right, var(--primary), var(--secondary)); color: white; }
-        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3); }
-        #output-container { margin-top: 30px; background: #020617; border-radius: 16px; padding: 20px; border: 1px solid #1e293b; }
-        #output { color: #10b981; font-family: 'Fira Code', monospace; font-size: 13px; max-height: 300px; overflow-y: auto; white-space: pre-wrap; margin-top: 10px; }
-        .badge { background: var(--primary); color: white; padding: 3px 10px; border-radius: 8px; font-size: 0.8rem; }
-        #status { text-align: center; font-size: 0.85rem; margin-top: 10px; color: #94a3b8; min-height: 20px; }
-        .loader { color: var(--secondary); font-weight: bold; }
+        
+        .button-zone { display: grid; grid-template-columns: 2.25fr 2.25fr; gap: 10px; margin-top: 10px; }
+        .btn { border: none; padding: 14px; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.3s; text-transform: uppercase; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 12px; }
+        
+        /* Kolory przycisków */
+        .btn-auto { background: linear-gradient(to right, var(--success), #059669); color: white; }
+        .btn-manual { background: rgba(99, 102, 241, 0.1); color: #a5b4fc; border: 1px solid rgba(99, 102, 241, 0.3); }
+        .btn-extract { background: var(--primary); color: white; }
+        .btn:hover { transform: translateY(-2px); filter: brightness(1.1); }
+
+        #status-bar { text-align: center; font-size: 0.85rem; padding: 10px; margin: 10px 0; border-radius: 10px; min-height: 20px; transition: 0.3s; }
+        .status-idle { color: #94a3b8; }
+        .status-error { background: rgba(239, 68, 68, 0.1); color: var(--danger); border: 1px solid var(--danger); }
+        .status-work { color: var(--secondary); font-weight: bold; }
+
+        .manual-paste-area { margin-top: 20px; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.05); }
+
+        #output-container { margin-top: 25px; background: #020617; border-radius: 16px; padding: 20px; border: 1px solid #1e293b; }
+        #output { color: #34d399; font-family: 'Fira Code', monospace; font-size: 13px; max-height: 250px; overflow-y: auto; white-space: pre-wrap; margin-top: 10px; border-top: 1px solid #1e293b; padding-top: 10px; }
+        
+        .badge { background: var(--primary); color: white; padding: 2px 8px; border-radius: 6px; font-size: 0.8rem; }
+        kbd { background: #334155; padding: 2px 4px; border-radius: 4px; font-size: 0.75rem; color: #cbd5e1; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>Lead Magnet Pro v4</h1>
-    <p class="subtitle">Deep Cloud Scrape Mode (Multi-Page Support)</p>
+    <h1>Lead Magnet Pro v7.0</h1>
+    <p class="subtitle">Hybrid Engine: Automatic Cloud Scrape & Manual Precision</p>
 
     <div class="input-group">
-        <label>Target Keywords (comma separated)</label>
-        <textarea id="keywords" rows="2" placeholder="e.g. LLC Owner, Startup Founder"></textarea>
+        <label>1. Target Keywords (comma separated)</label>
+        <textarea id="keywords" rows="2" placeholder="e.g. Real Estate Agent, Fitness Coach, CEO"></textarea>
         
         <div class="config-grid">
             <div>
-                <label>Country</label>
+                <label>Location</label>
                 <input type="text" id="location" placeholder="e.g. USA">
             </div>
             <div>
@@ -59,69 +75,87 @@
                 </select>
             </div>
             <div>
-                <label>Email</label>
+                <label>Email Provider</label>
                 <select id="emailProvider">
                     <option value="@gmail.com">@gmail.com</option>
                     <option value="@outlook.com">@outlook.com</option>
-                    <option value="@yahoo.com">@yahoo.com</option>
-                    <option value='member of "@"'>Any @</option>
+                    <option value='member of "@"'>Any @Domain</option>
                 </select>
             </div>
             <div>
-                <label>Pages (max 10 per page)</label>
+                <label>Auto Pages</label>
                 <select id="pages">
                     <option value="1">1 Page</option>
                     <option value="2">2 Pages</option>
                     <option value="3">3 Pages</option>
-                    <option value="5">5 Pages (Deep)</option>
                 </select>
             </div>
         </div>
 
-        <button class="btn btn-primary" onclick="runDeepScrape()">
-            🚀 Start Deep Cloud Scrape
-        </button>
-        <div id="status">Status: Ready</div>
+        <div class="button-zone">
+            <button class="btn btn-auto" onclick="runCloudScrape()">🚀 Run Auto Scrape</button>
+            <button class="btn btn-manual" onclick="manualSearch('combined')">🔍 Manual (1 Page)</button>
+        </div>
+        <div id="status-bar" class="status-idle">System Ready</div>
     </div>
 
+    <!-- Manual Backup Area -->
+    <div class="manual-paste-area">
+        <label>2. Manual Backup (Paste Google text here if Auto fails)</label>
+        <p style="font-size: 0.7rem; color: #64748b; margin-top: -5px; margin-bottom: 10px;">
+            If Auto is blocked: Open Manual Search &rarr; <kbd>Ctrl+A</kbd> &rarr; <kbd>Ctrl+C</kbd> &rarr; Paste here &rarr; Extract
+        </p>
+        <div style="display: flex; gap: 10px;">
+            <textarea id="rawInput" rows="2" style="margin-bottom:0;" placeholder="Paste raw text from Google here..."></textarea>
+            <button class="btn btn-extract" style="width: 150px;" onclick="extractFromText()">Extract</button>
+        </div>
+    </div>
+
+    <!-- Results Section -->
     <div id="output-container">
         <div style="display: flex; justify-content: space-between; align-items: center;">
-            <span>Total Leads: <b id="count" class="badge">0</b></span>
-            <div style="display: flex; gap: 10px;">
-                <button onclick="copyResults()" style="background: transparent; border: 1px solid #334155; color: #a5b4fc; padding: 5px 12px; border-radius: 8px; cursor: pointer; font-size: 12px;">Copy</button>
-                <button onclick="clearAll()" style="background: transparent; border: 1px solid rgba(239,68,68,0.3); color: #ef4444; padding: 5px 12px; border-radius: 8px; cursor: pointer; font-size: 12px;">Clear</button>
+            <span>Total Unique Leads: <b id="count" class="badge">0</b></span>
+            <div>
+                <button onclick="copyResults()" style="background:transparent; border:1px solid #334155; color:#a5b4fc; padding:5px 12px; border-radius:8px; cursor:pointer; font-size: 12px;">Copy List</button>
+                <button onclick="clearAll()" style="background:transparent; border:1px solid rgba(239,68,68,0.2); color:#ef4444; padding:5px 12px; border-radius:8px; cursor:pointer; font-size: 12px; margin-left:5px;">Clear</button>
             </div>
         </div>
-        <div id="output">Results will appear here...</div>
+        <div id="output">No leads collected yet...</div>
     </div>
 </div>
 
 <script>
-    const delay = ms => new Promise(res => setTimeout(res, ms));
+    const sleep = ms => new Promise(res => setTimeout(res, ms));
 
-    async function runDeepScrape() {
-        const keywordsInput = document.getElementById('keywords').value;
-        const location = document.getElementById('location').value;
-        const platform = document.getElementById('platform').value;
-        const email = document.getElementById('emailProvider').value;
+    // --- LOGIKA POBIERANIA DANYCH ---
+    function getQueryData() {
+        const kws = document.getElementById('keywords').value.split(',').map(k => k.trim()).filter(k => k !== "");
+        return {
+            keywords: kws,
+            combined: kws.map(k => `"${k}"`).join(' OR '),
+            location: document.getElementById('location').value.trim(),
+            platform: document.getElementById('platform').value,
+            email: document.getElementById('emailProvider').value
+        };
+    }
+
+    // --- TRYB AUTOMATYCZNY (CLOUD) ---
+    async function runCloudScrape() {
+        const data = getQueryData();
+        if(data.keywords.length === 0) return alert("Please enter keywords!");
+
         const maxPages = parseInt(document.getElementById('pages').value);
-        const status = document.getElementById('status');
-
-        if(!keywordsInput) { alert("Enter keywords!"); return; }
-
-        const keywordsArray = keywordsInput.split(',').map(k => k.trim()).filter(k => k !== "");
-        const combinedKeywords = keywordsArray.map(k => `"${k}"`).join(' OR ');
+        const status = document.getElementById('status-bar');
         
-        status.innerHTML = `<span class="loader">⚙️ Initializing Deep Scrape...</span>`;
+        status.className = "status-work";
         
         for (let i = 0; i < maxPages; i++) {
             const startAt = i * 100;
-            status.innerHTML = `<span class="loader">⏳ Scraping Page ${i + 1} of ${maxPages} (Results ${startAt}-${startAt + 100})...</span>`;
-            
-            // Budowanie zapytania z parametrem &start=
-            let query = `${platform} (${combinedKeywords}) `;
-            if(location) query += `"${location}" `;
-            query += `"${email}"`;
+            status.innerHTML = `⏳ Auto-Scraping Page ${i + 1}...`;
+
+            let query = `${data.platform} (${data.combined}) `;
+            if(data.location) query += `"${data.location}" `;
+            query += `"${data.email}"`;
 
             const googleUrl = `https://www.google.com/search?q=${encodeURIComponent(query)}&num=100&start=${startAt}`;
             const proxyUrl = `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(googleUrl)}`;
@@ -130,56 +164,90 @@
                 const response = await fetch(proxyUrl);
                 const html = await response.text();
 
-                if (html.includes("detected unusual traffic")) {
-                    status.innerHTML = `<span style="color:#ef4444">❌ Blocked by Google on page ${i+1}. Try again later or use fewer pages.</span>`;
-                    break; 
+                if (html.includes("detected unusual traffic") || html.length < 1000) {
+                    showError("Auto-Scrape BLOCKED by Google. Please use MANUAL buttons and paste text below.");
+                    return; // Przerywamy pętlę
                 }
 
-                extractEmails(html);
-                
-                // Czekamy 3 sekundy między stronami, żeby być "bezpieczniejszym"
-                if (i < maxPages - 1) await delay(3000);
+                processRawText(html);
+                if (i < maxPages - 1) await sleep(3000); // Delay for safety
 
             } catch (err) {
-                status.innerHTML = `<span style="color:#ef4444">❌ Proxy Error on page ${i+1}.</span>`;
-                break;
+                showError("Proxy Error. Connection failed. Try Manual mode.");
+                return;
             }
         }
-        
-        if (!status.innerHTML.includes("❌")) {
-            status.innerHTML = `<span style="color:#10b981">✅ Deep Scrape Complete!</span>`;
+        status.innerHTML = "✅ Auto-Scrape Finished Successfully!";
+        status.className = "status-idle";
+    }
+
+    // --- TRYB MANUALNY (TABS/WINDOW) ---
+    function manualSearch(mode) {
+        const data = getQueryData();
+        if(data.keywords.length === 0) return alert("Please enter keywords!");
+
+        const status = document.getElementById('status-bar');
+        status.className = "status-idle";
+        status.innerHTML = "💡 Manual Mode: Copy results from Google and paste into the box below.";
+
+        if (mode === 'combined') {
+            let query = `${data.platform} (${data.combined}) `;
+            if(data.location) query += `"${data.location}" `;
+            query += `"${data.email}"`;
+            window.open(`https://www.google.com/search?q=${encodeURIComponent(query)}&num=100`, '_blank');
+        } else {
+            data.keywords.forEach((k, index) => {
+                let query = `${data.platform} "${k}" `;
+                if(data.location) query += `"${data.location}" `;
+                query += `"${data.email}"`;
+                setTimeout(() => window.open(`https://www.google.com/search?q=${encodeURIComponent(query)}&num=100`, '_blank'), index * 500);
+            });
         }
     }
 
-    function extractEmails(newHtml) {
+    // --- EKSTRAKCJA I PRZETWARZANIE ---
+    function extractFromText() {
+        const raw = document.getElementById('rawInput').value;
+        if(!raw) return alert("Paste some text first!");
+        processRawText(raw);
+        document.getElementById('rawInput').value = ""; // Clear after extract
+    }
+
+    function processRawText(text) {
         const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g;
-        const foundEmails = newHtml.match(emailRegex) || [];
+        const found = text.match(emailRegex) || [];
+        
         const outputDiv = document.getElementById('output');
         const countSpan = document.getElementById('count');
 
-        let existingContent = outputDiv.innerText;
-        let existingEmails = (existingContent.includes("@")) ? existingContent.split('\n') : [];
+        let currentEmails = (outputDiv.innerText.includes("@")) ? outputDiv.innerText.split('\n') : [];
+        const combined = [...currentEmails, ...found];
+        const unique = [...new Set(combined.map(e => e.trim().toLowerCase()))];
 
-        const combined = [...existingEmails, ...foundEmails];
-        const uniqueEmails = [...new Set(combined.map(e => e.trim().toLowerCase()))];
-
-        if (uniqueEmails.length > 0) {
-            outputDiv.innerText = uniqueEmails.join('\n');
-            countSpan.innerText = uniqueEmails.length;
+        if (unique.length > 0) {
+            outputDiv.innerText = unique.join('\n');
+            countSpan.innerText = unique.length;
         }
     }
 
+    function showError(msg) {
+        const status = document.getElementById('status-bar');
+        status.className = "status-error";
+        status.innerHTML = `⚠️ ${msg}`;
+        alert(msg);
+    }
+
     function clearAll() {
-        document.getElementById('output').innerText = "Results will appear here...";
+        document.getElementById('output').innerText = "No leads collected yet...";
         document.getElementById('count').innerText = "0";
-        document.getElementById('status').innerText = "Status: Cleared";
+        document.getElementById('status-bar').className = "status-idle";
+        document.getElementById('status-bar').innerText = "System Cleared";
     }
 
     function copyResults() {
         const text = document.getElementById('output').innerText;
-        if(text.includes("@")) {
-            navigator.clipboard.writeText(text).then(() => alert("Copied!"));
-        }
+        if(!text.includes("@")) return;
+        navigator.clipboard.writeText(text).then(() => alert("Lead list copied!"));
     }
 </script>
 
